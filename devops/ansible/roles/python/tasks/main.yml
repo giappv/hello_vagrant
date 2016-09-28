@@ -1,0 +1,44 @@
+---
+- name: Install dependencies required to setup a new version of Python
+  sudo: yes
+  apt: pkg={{ item }} state=latest
+  tags: [packages]
+  with_items:
+    - build-essential
+    - libsqlite3-dev
+    - sqlite3 # for the command line client
+    - libxml2-dev
+    - bzip2
+    - libbz2-dev
+    - libssl-dev
+    - redis-server
+
+- name: Ensure ansible-cache directory exists
+  shell: mkdir /var/local/ansible-cache creates=/var/local/ansible-cache
+  sudo: yes
+    
+# Install Python 2.7
+- name: Download Python 2.7
+  get_url: dest=/var/local/ansible-cache url=http://www.python.org/ftp/python/2.7.6/Python-2.7.6.tar.xz 
+  sudo: yes
+
+- name: Ensure Python 2.7 is extracted
+  shell: chdir=/var/local/ansible-cache tar xJf ./Python-2.7.6.tar.xz -C /opt creates=/opt/Python-2.7.6
+  sudo: yes
+
+- name: Ensure Python 2.7 is configured
+  shell: chdir=/opt/Python-2.7.6 ./configure --prefix=/opt/python2.7
+
+- name: Ensure Python 2.7 make'd
+  shell: chdir=/opt/Python-2.7.6 make
+
+- name: Ensure Python 2.7 installed
+  shell: chdir=/opt/Python-2.7.6 make install  # Need to add a 'creates=' flag here
+  sudo: yes
+  
+- easy_install: name=pip state=latest
+    
+- name: Install fabric for deployment
+  pip: name={{ item }}
+  with_items:
+    - fabric

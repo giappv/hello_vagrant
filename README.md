@@ -1,2 +1,2 @@
-# hello_vagrant
-Quickly replace XAMPP or WAMP with Vagrant
+# Hello Vagrant
+[Quickly replace XAMPP with Vagrant for PHP Developers](https://blog.beehexa.com/)
