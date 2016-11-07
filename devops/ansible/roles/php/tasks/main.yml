@@ -14,8 +14,8 @@
 - name: Install PHP Packages
   sudo: yes
   apt: pkg={{ item }} state=latest
-  with_items: php.packages
-  when: php.packages is defined
+  with_items: "{{ php.packages  | default([]) }}"
+  #when: php.packages is defined
 
 - name: Install pear
   sudo: yes
